@@ -1,0 +1,32 @@
+<div class="container" ng-controller="Main2Ctrl">
+
+   <input id="fichero-act" type="file" name="fichero" accept=".js" style="display: none;" />
+   
+    <div class="panel panel-default" style="background: #eee">
+        <nav id="gcbc-toolbar" class="btn-toolbar">
+            <div class="container">
+                <div class="col-sm-12">
+                    <div class="btn-group">
+                        <a class="btn btn-default" ng-class="{'disabled': preguntas.length==0}" data-toggle="tooltip" title="Borrar todo" ng-click="CloseAll()"><i class="glyphicon glyphicon-remove-circle"></i></a>
+                        <a class="btn btn-default" ng-class="{'disabled': preguntas.length==0}" ng-click="HacerPeticion()" data-toggle="tooltip" title="Descargar"><i class="glyphicon glyphicon-floppy-save"></i></a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+  
+   <!-- TITULO -->
+    <div id="bloque-titulo" ng-model="titulo" ng-class="{'has-success' : !titulo.error && titulo.success , 'has-error' : titulo.error && !titulo.success}">
+        <input type="text" class="form-control" ng-model="titulo.text" placeholder="Titulo... (activity-X.X)" ng-keyup="ComprobarTitulo()">
+        <div class="error-container" ng-if="titulo.error">
+            <small class="help-block">Formato incorrecto. Debe ser "activity-X.X" donde las X son "tema.actividad"</small>
+        </div>
+    </div>
+   
+
+    <pre>{{preguntas | json}}</pre>
+    
+</div>
+
+

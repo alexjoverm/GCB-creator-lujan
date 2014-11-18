@@ -1,0 +1,59 @@
+<div class="container" ng-controller="Main2Ctrl">
+
+    <div class="panel panel-default" style="background: #eee">
+        <nav id="gcbc-toolbar" class="btn-toolbar">
+            <div class="container">
+                <div class="col-sm-12">
+                    <div class="btn-group">
+                        <a class="btn btn-default" ng-class="{'disabled': preguntas.length==0}" ng-click="HacerPeticion()" data-toggle="tooltip" title="Descargar"><i class="glyphicon glyphicon-floppy-save"></i></a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+  
+   <!-- TITULO -->
+    <div id="bloque-titulo" ng-model="titulo" ng-class="{'has-success' : !titulo.error && titulo.success , 'has-error' : titulo.error && !titulo.success}">
+        <input type="text" class="form-control" ng-model="titulo.text" placeholder="Titulo... (activity-X.X)" ng-keyup="ComprobarTitulo()">
+        <div class="error-container" ng-if="titulo.error">
+            <small class="help-block">Formato incorrecto. Debe ser "activity-X.X" donde las X son "tema.actividad"</small>
+        </div>
+    </div>
+    
+    <div id="questions-container" class="panel panel-default some-pad"> 
+    
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="html1">HTML 1: </label>
+                <div class="col-sm-10">
+                    <span id="html1" class="form-control" ng-model="pregunta.customHTML1" contenteditable="true"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="iframe1">iFrame 1: </label>
+                <div class="col-sm-10">
+                    <input id="iframe1" class="form-control" ng-model="pregunta.iframe1" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="iframe2">iFrame 2: </label>
+                <div class="col-sm-10">
+                    <input id="iframe2" class="form-control" ng-model="pregunta.iframe2" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="html2">HTML 2: </label>
+                <div class="col-sm-10">
+                    <span id="html2" class="form-control" ng-model="pregunta.customHTML2" contenteditable="true"></span>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+    
+   
+
+    <pre>{{pregunta | json}}</pre>
+    
+</div>

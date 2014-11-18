@@ -1,0 +1,1144 @@
+@cl-question: #258de6;
+@cl-question-font: #fff;
+
+@cl-red: #d9534f;
+@cl-yellow-orange: #f5cc1e;
+
+@cl-tortoise: #249EA3;
+
+@cl-question-selected: #0bbc7f;
+
+@cl-editor-glow: #fa5f00;
+@cl-nav-fixed: #444; //#e66519
+
+@cl-add-button: #12c464;
+@tam-question-left: 40px;
+@tam-add-button: 30px;
+
+@anim-view-dur: 0.2s;
+@trans-buttons: 0.2s;
+
+
+//****************  MIXINGS
+
+.make-rounded-button(@cl; @cl-fn: #fff; @mult: #3c3c3c; @porc: 35%){
+    padding: 6px 8px;
+    transition: all @trans-buttons ease;
+    border-radius: 200px;
+    cursor: pointer;
+    color: @cl-fn;
+    border: 1px solid multiply(@cl, #ddd);
+    background: @cl;
+
+    &:hover,&:focus{
+        background: screen(saturate(@cl,@porc), @mult);
+        color: @cl-fn;
+        text-decoration: none;
+    }
+}
+
+.make-header-buttons(@pd-v: 4px; @pd-h: 10px; @fn: 17px){
+    float: right;
+    display: inline-block;
+
+    >a{
+        float: left;
+        display: inline-block;
+        color: @cl-question-font;
+        transition: all @trans-buttons ease;
+        font-size: @fn;
+        cursor: pointer;
+
+
+        &.question-close{
+            background: @cl-red;
+            padding: @pd-v (@pd-h + 3);
+            &:hover,&:focus{
+                text-decoration: none;
+                background: screen(saturate(@cl-red,35%),#333);
+            }
+        }
+
+        &.question-collapse{
+            background: @cl-question;
+            padding: @pd-v @pd-h;
+            &:hover,&:focus{
+                text-decoration: none;
+                background: multiply(@cl-question , #ddd);
+            }
+        }
+    }
+}
+
+.make-checkbox(@tam: 24px; @mar: 6px; @cl: #fff; @bg-cl: #222; @bd-r: 0px;)
+{ 
+   /* <div class="squaredTwo">
+        <input type="checkbox" value="None" id="squaredTwo" name="check" />
+        <label for="squaredTwo"></label>
+    </div> */
+    
+        width: @tam;
+        height: @tam;
+        display: inline-block;
+        margin: 0 10px;
+        position: relative;
+        background: @cl;
+        background: linear-gradient(top, @cl 0%, multiply(@cl, #333) 100%);
+        box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+        border-radius: @bd-r;
+    
+        input[type=checkbox] {
+            visibility: hidden;
+        }
+    
+        label{
+            cursor: pointer;
+            position: absolute;
+            width: (@tam - @mar);
+            height: (@tam - @mar);
+            left: (@mar / 2);
+            top: (@mar / 2);
+            box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
+            border-radius: @bd-r;
+            
+            background: @bg-cl;
+            background: -webkit-linear-gradient(top, @bg-cl 0%, multiply(@bg-cl, #222) 100%);
+            background: -moz-linear-gradient(top, @bg-cl 0%, multiply(@bg-cl, #222) 100%);
+            background: -o-linear-gradient(top, @bg-cl 0%, multiply(@bg-cl, #222) 100%);
+            background: -ms-linear-gradient(top, @bg-cl 0%, multiply(@bg-cl, #222) 100%);
+            background: linear-gradient(top, @bg-cl 0%, multiply(@bg-cl, #222) 100%);
+            
+            &:after {
+              content: '';
+              width: 13px;
+              height: 8px;
+              position: absolute;
+              top: 3px;
+              left: 3px;
+              border: 3px solid #fcfff4;
+              border-top: none;
+              border-right: none;
+              background: transparent;
+              opacity: 0;
+              transform: rotate(-45deg);
+                
+                
+            }
+            
+            &:hover::after{
+                opacity: 0.3;
+            }
+        }
+    
+        input[type=checkbox]:checked + label:after{
+            opacity: 1;
+            width: 100%;
+        }
+}
+
+
+.btn-ayuda{
+    .make-rounded-button(@cl: #444; @porc: 0%);
+    border: 3px solid #fff;
+    font-size: 18px;
+    padding:  2px 10px;
+    display: inline-block;
+    float: left;
+    margin-left: 8px;
+    overflow: hidden;
+    
+    &:hover:after{
+        border-right-color: screen(#444, #3c3c3c);
+    }
+    
+    >span{ margin-left: -1px; }
+    
+    &:after{
+        position: absolute;
+        display: block;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+        border-width: 9px;
+        bottom: 8px;
+        margin-left: -15px;
+        content: " ";
+        border-right-color: #444;
+        border-left-width: 0;
+        transition: all @trans-buttons ease;
+    }
+}
+
+
+
+//******************** ANIMACIONES
+
+// Vistas
+.view.ng-enter{
+    animation: view_enter (@anim-view-dur * 2);
+}
+
+.view.ng-leave{
+    animation: view_leave @anim-view-dur;
+}
+
+@keyframes view_enter{
+    0% { opacity: 0; }
+    51% { opacity: 0; }
+    100% { opacity: 1; }
+}
+@keyframes view_leave{
+    0% { opacity: 1; }
+    100% { opacity: 0; height: 0;}
+}
+
+@keyframes anim_insert{
+    //0% { height: 15px; opacity: 0; }
+    100% { height: 20px; opacity: 1; }
+}
+
+// Choices ** NO LAS PONGO PORQUE AL REORDENAR SE APLICAN **
+/*.choice-animation.ng-enter, .choice-animation.ng-leave{ 
+  position: relative;
+  transition: 0.8s ease all;
+}
+
+.choice-animation.ng-enter {
+  left: -90%;
+  opacity: 0;
+}
+.choice-animation.ng-enter.ng-enter-active {
+  left: 0;
+  opacity:1;
+}
+
+.choice-animation.ng-leave {
+  left: 0;
+  opacity:1;
+}
+.choice-animation.ng-leave.ng-leave-active {
+  left: -90%;
+  opacity:0;
+}
+*/
+
+
+.bq-msg.ng-enter, .bq-msg.ng-leave {
+  transition:0.4s ease all;
+}
+
+.bq-msg.ng-enter, .bq-msg.ng-leave.ng-leave-active {
+  opacity:0;
+}
+.bq-msg.ng-leave, .bq-msg.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
+.alert.ng-enter{
+  transition:0.4s ease all;
+}
+.alert.ng-leave{
+    transition: 0s linear all;
+}
+
+.alert.ng-enter{
+  opacity:0;
+}
+.alert.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
+
+//** SORTABLE
+.sortable-placeholder{
+    background: screen(@cl-question,#ccc) !important;
+}
+
+
+
+//********************  CONTENIDO
+
+
+.my-checkbox{
+    .make-checkbox;
+}
+
+.my-radiobutton{
+    .make-checkbox(@bd-r: 50px);
+    label:after{
+      width: 12px;
+      height: 7px;
+      top: 5px;
+      left: 3px;
+    }
+}
+
+.clear{
+    width: 1px;
+    height: 1px;
+    float: none;
+    clear: both;
+}
+
+.centrado{
+    text-align: center;
+}
+
+.btn{
+    transition: all @trans-buttons ease;
+}
+
+.help-block{
+    color: #a94442;
+    margin-bottom: 0;
+}
+
+.disabled{
+    pointer-events: none;
+    cursor: not-allowed;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    opacity: .65;
+}
+
+
+
+.form-control::-webkit-input-placeholder { color: #aaa; } /* WebKit */
+.form-control:-moz-placeholder { color: #aaa; } /* Firefox 18- */
+.form-control::-moz-placeholder { color: #aaa; } /* Firefox 19+ */
+.form-control:-ms-input-placeholder { color: #aaa; } 
+
+
+
+
+
+main{ 
+    position: relative;
+    min-height: 450px;
+    padding: 20px 0;
+    
+    >div{
+        position: relative;
+    }
+
+    .panel.panel-default{
+        min-height: 45px;
+    }
+    
+    #bloque-titulo{
+        padding: 5px 0 15px 0;
+        
+        >input{
+            text-align: center;
+            font-size: 20px;
+        }
+    }
+    
+    #bloque-msg{
+        margin: -20px 0 20px 0;
+        overflow: hidden;
+        
+        .alert{
+            padding: 7px 15px;
+        }
+    }
+    
+
+ //*** TOOLBAR
+    nav#gcbc-toolbar{
+        padding: 5px 0;
+        overflow: hidden;
+        
+        .container{
+            padding: 0;
+        }
+        
+        &.fixed{
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            transition: all @trans-buttons ease;
+            z-index: 5;
+            background: @cl-nav-fixed;
+            border: 1px solid darken(@cl-nav-fixed, 5%);
+            margin: 0 auto;
+            border-radius: 5px;
+        } 
+        
+        .btn-group{
+            margin-right: 12px;
+        }
+        
+        #editor-buttons{
+            border-radius: 4px;
+            transition: all @trans-buttons ease;
+        }
+        #editor-buttons.editor-glow{
+            box-shadow: 0px 0px 10px 0px @cl-editor-glow;
+        }
+    }
+    
+.form-control{
+    height: auto;
+}
+
+.container-fluid{
+    padding:0;
+}
+
+span[contenteditable="true"]{ 
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 34px;
+    min-height: 34px;
+    max-height: 120px; 
+    resize: vertical;
+
+    &:empty:before{
+        content: attr(placeholder);
+        color: #aaa; 
+    }
+    p{margin: 0;}
+}
+
+textarea.form-control{
+    resize: vertical;
+    height: 34px;
+    min-height: 34px;
+    max-height: 120px;
+}    
+    
+.input-group{  
+    .input-group-btn>a{
+        transition: all @trans-buttons ease;
+        background: desaturate(multiply(@cl-question, #eee), 5%);
+        color: white;
+        margin-left: 0;
+
+        &:hover, &:focus{
+            background: saturate(screen(@cl-question,#222),5%);
+            color:white;
+        }
+    }
+}
+    
+span.span-label{
+    display: inline-block;
+    float: left;
+    width: 25%;
+    max-width: 110px;
+    line-height: 2;
+}
+
+span.span-label + span{
+    width: 80%;
+}
+
+#general-asses{
+    background: #eee;
+    padding: 1px 10px;
+    margin: 5px;
+    
+    >div{
+        margin: 10px 0;
+    }
+}
+    
+.asses-col-der{
+   >input{
+       width: 65%;
+       display: inline-block;
+       float: left;
+   }
+}
+    
+.row{ margin: 0; }
+    
+.asses-mc{ 
+    
+    >div{
+        padding: 0;
+    }
+    
+    >div.col-sm-7{
+        margin: 30px 0 10px 0;
+    }
+}
+
+
+//*** PREGUNTAS
+    #questions-container{ 
+        
+        .insert-question{
+            width: 100%;
+            text-align: center;
+            
+            a.open-popover{
+                margin: 1px auto;
+                background: #eee;
+                cursor: pointer;
+                color: #000;
+                width: 100%;
+                display: block;
+                transition: all 0.5s ease;
+                overflow: hidden;
+                height: 15px;
+                opacity: 0.2;
+                
+                .fa-plus:before{ position: relative; top: -2px; transition: all 0.2s ease; color: #000;}
+                
+                &:hover, &:focus{
+                    outline: 0;
+                } 
+                
+                &.hovered{
+                    height: 20px;
+                    opacity: 1;
+                    .fa-plus:before{ position: relative; top: 0; }
+                }
+                
+                &.selected, &.selected:hover, &.selected:focus{ 
+                    height: 20px;
+                    opacity: 1;
+                    color: #fff;
+                    background: @cl-question-selected;
+                    .fa-plus:before{ position: relative; top: 0; color: #fff; }
+                }
+                
+                
+            }
+        }
+        
+        .question-wrapper.colapsado{
+            height: 36px !important;
+        }
+        
+        .question-wrapper .question-wrapper.colapsado{
+            height: 45px !important;
+        }
+        
+
+        div.question-wrapper{
+            width: 100%;
+            position: relative;
+            border: 2px solid @cl-question;
+            background: screen(@cl-question,#eee);
+            border-radius: 6px;
+            padding: 7px 15px; 
+            overflow: hidden;
+            
+
+      // Panel izquierdo para mover
+            .questions-inside-left{
+                position: absolute;
+                top: 49%;
+                left: 0;
+                transform: translateY(-50%);
+                background: @cl-question;
+                border-right: 2px solid screen(@cl-question,#eee);
+                width: @tam-question-left;
+                height: 103%;
+                color: @cl-question-font;
+                cursor: move;
+                z-index: 2;
+
+                &>span{
+                    position: absolute;
+                    top: 45%;
+                    left: 30%;
+                    //transition: all 0.4s ease;
+                }
+            }
+            
+            
+
+      // Panel derecho, donde van las preguntas
+            .questions-inside-right
+            {
+                padding-left: 40px;
+                
+            // General
+                
+                .container-fluid{
+                    padding:0;
+                }
+
+               
+            // Header
+                header{
+                    
+                    background: @cl-question;
+                    overflow: hidden;
+                    padding: 0 0px 0 18px;
+                    margin: -7px -15px 10px -18px;
+                    border-bottom: 1px solid @cl-question;
+                    
+                    h3{ 
+                        display: inline-block;
+                        float: left;
+                        padding: 6px 0;
+                        margin: 0;
+                        font-size: 18px;
+                        color: @cl-question-font;
+                    }
+                    
+                    .question-header-buttons{ 
+                        .make-header-buttons;
+                    }
+                }
+                
+
+                div.question-wrap{
+                    width: 100%;
+                    padding: 5px 0;
+                    overflow: hidden;
+
+                }
+
+         // Multiple choice
+                .multiple-choice-wrap{ 
+                    
+                    ul{
+                        list-style: none;
+                        display: inline-block;
+                        width: 98%;
+                        margin: 10px 0;
+
+                        @media (min-width: 768px){
+                            margin: 0;
+                        }
+                        
+                        span.close-choice{ 
+                            .make-rounded-button(@cl-red);
+                            margin-left: 14px;
+                        }
+                        
+                        >li{ 
+                            float: none;
+                            width: 98%;
+                            padding: 0 10px;
+                        }
+                        
+                        @media (min-width: 768px){
+                            >li{ 
+                                float: left;
+                                width: 35%;
+                                padding: 0 10px;
+
+                                &:last-child{ width: 30%; }
+                            }
+                            >li.bigger{
+                                width: 70%;
+                            }
+                        }
+                        
+                        @media (min-width: 992px){
+                            >li{ 
+                                width: 38%;
+                                &:last-child{ width: 24%; }
+                            }
+                            >li.bigger{
+                                width: 70%;
+                            }
+                        }
+                    }
+                    
+                    ol{
+                        counter-reset: li; // Inicia contador
+                        list-style: none;
+                        *list-style: decimal; // Mantiene contador en IE 6/7
+                        padding: 0; 
+                        margin: 5px 0 0 0;
+
+                        span.add-question{ 
+                            .make-rounded-button(#32cb2c; @mult: #222; @porc: 15%);
+                            margin-right: 8px;
+                        }
+
+                        span.num-list{
+                            position: relative;
+                            display: inline-block;
+                            margin: .5em 0;
+                            background: #ddd;
+                            color: @cl-question-font;
+                            text-decoration: none;
+                            border-radius: .3em;
+                            transition: all @trans-buttons ease-out;
+                            cursor: default;
+
+                            &:hover:before{
+                                //transform: rotate(360deg);
+                            }
+                            &:before{
+                                content: counter(li,upper-latin);
+                                counter-increment: li;
+                                position: absolute;
+                                top: -50px;
+                                margin-left: 15px;
+                                line-height: 1.8em;
+                                margin-top: -1.7em;
+                                background: @cl-question;
+                                height: 2em;
+                                width: 2em;
+                                border: .2em solid #fff;
+                                text-align: center;
+                                font-weight: bold;
+                                border-radius: 2em;
+
+                                @media (min-width: 768px){
+                                    top: 0;
+                                }
+                            }
+                        }
+                    }   
+                }
+
+                
+                
+                .multiple-choice-group-wrap{ 
+                    
+                    .question-wrapper{
+                        margin: 10px auto;
+                    }
+                    
+                    .row.centrado{
+                        .btn-lg{
+                            font-size: 16px;
+                            
+                            i{ margin-right: 7px; }
+                        }
+                    }
+                    
+                    .container-fluid{ 
+                        .col-sm-2>input{
+                            max-width: 90px;
+                            display: inline-block;
+                            float: left;
+                        }
+                        
+                        @media (min-width: 768px){
+                            
+                            .col-sm-5{
+                                width: 38%;
+                            }
+                            
+                            .col-sm-2{
+                                width: 24%;
+                                padding-right: 0;
+                            }
+                        }
+                    }
+                    
+                    .multiselect{
+                        position: relative;
+                        left: 20%;
+                        display: inline-block;
+                        padding: 1px 5px 1px 10px;
+                        background: @cl-question;
+                        color: @cl-question-font;
+                        line-height: 1.8;
+                        border-radius: 4px;
+                        border: 3px solid white;
+                        box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+                    }
+                    
+                    .questions-inside-right{
+                        .question-wrap{ 
+                            display: inline-block;
+                            float: left;
+                            width: 82%;
+                            margin-top: -6px;
+                            
+                            @media (min-width: 992px){
+                                width: 88%;
+                            }
+                        }
+                        .question-group-buttons{
+                            .make-header-buttons(@pd-v: 6px);
+                            padding: 2px;
+                            background: @cl-question;
+                            margin: -10px -18px 0 0;
+                        }
+                    }
+                    
+                    .inner-questions-header{ 
+                        
+                        @cl-header: #555;
+                        
+                        background: @cl-header;    //@cl-question;
+                        overflow: hidden;
+                        margin: 15px 0 5px 0;
+                        padding: 0 0px 0 18px;
+                        text-align: center;
+                        box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
+                        border-radius: 4px;
+                        border: 3px solid white;
+
+                        h3{ 
+                            display: inline-block;
+                            padding: 6px 0;
+                            margin: 0;
+                            font-size: 17px;
+                            color: @cl-question-font;
+                        }
+
+                        a{ 
+                            display: inline-block;
+                            float: right;
+                            margin: 0;
+                            padding: 0px 10px;
+                            background: @cl-header;
+                            color: @cl-question-font;
+                            transition: all @trans-buttons ease;
+                            font-size: 22px;
+                            cursor: pointer;
+                            border-left: 2px solid #eee;
+                            
+                            &:hover,&:focus{
+                                text-decoration: none;
+                                background: screen(@cl-header,#333);
+                            }
+        
+                        }
+                    }
+                    
+                    
+                    ul{
+                        @media (min-width: 768px){
+                            >li{
+                                width: 63%;
+                                padding: 0 10px;
+
+                                &:last-child{ width: 35%; }
+                            }
+                        }
+                        
+                        @media (min-width: 992px){
+                            >li{ 
+                                width: 65%;
+
+                                &:last-child{ width: 30%; }
+                            }
+                        }
+                    } 
+                    
+                    div.question-wrapper{ 
+                        
+                        @cl: multiply(@cl-question , #ddd);
+                        
+                        border: 2px solid @cl;
+                        background: screen(@cl,#eee);
+                        box-shadow: 0px 1px 6px rgba(70,70,70,0.5);
+
+                        .questions-inside-left{ background: @cl; }
+                        .questions-inside-right{ 
+                            .question-group-buttons{ background: @cl; }
+                        }
+                        a.question-collapse{
+                            background: @cl !important;
+                            &:hover,&:focus{
+                                background: multiply(@cl , #ddd) !important;
+                            }
+                        }
+                    }
+                    
+                    /*div.question-wrapper.inner-selected{
+                        border: 2px solid @cl-question-selected;
+                        background: screen(@cl-question-selected,#eee);
+
+                        .inner-questions-left{ background: @cl-question-selected; }
+                        .questions-inside-right{ 
+                            .question-group-buttons{ background: @cl-question-selected; }
+                        }
+                        a.question-collapse{
+                            background: @cl-question-selected !important;
+                            &:hover,&:focus{
+                                background: multiply(@cl-question-selected , #ddd) !important;
+                            }
+                        }
+                    }*/
+                }
+            }
+            
+           /* &.selected{
+                border: 2px solid @cl-question-selected;
+                background: screen(@cl-question-selected,#eee);
+                
+                .questions-inside-left{ background: @cl-question-selected; }
+                .questions-inside-right{ 
+                    header{ background: @cl-question-selected; border-bottom-color: @cl-question-selected;}
+                }
+                a.question-collapse{
+                    background: @cl-question-selected !important;
+                    &:hover,&:focus{
+                        background: multiply(@cl-question-selected , #ddd) !important;
+                    }
+                }
+            } */
+        }
+        
+        div.question-wrapper.colapsado{ 
+            .questions-inside-left>span{
+                top: 30%;
+            }
+            
+            .inner-questions-inside-left>span{
+                top: 35%;
+            }
+        }
+    }
+}
+
+
+
+.modal.bootbox{
+    .modal-footer{
+        text-align: center;
+    }
+}
+
+
+.modal.editor{ 
+    @cl-modal: #444;
+    
+    .modal-content
+    {
+        overflow: hidden;
+        
+        >.modal-header{
+            text-align: center;
+            background: @cl-modal;
+            color: @cl-question-font;
+
+            button.btn{
+                position: absolute;
+                top: 10px; right: 10px;
+                transition: all @trans-buttons ease;
+                font-size: 17px;
+                padding: 4px 11px;
+            }
+        }
+
+        >.modal-body{
+            >textarea, >span[contenteditable="true"]{
+                min-height: 200px;
+                max-height: 400px;
+                resize: vertical;
+            }
+        }
+
+        >.modal-footer{ 
+            text-align: center;
+            background: @cl-modal;
+
+            .btn-default{
+                transition: all @trans-buttons ease;
+                padding: 8px 16px;
+                font-size: 15px;
+                box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
+            }
+        }
+        
+        .note-dialog{
+            .modal-header{
+                color: #333;
+                background: #eee;
+            }
+            .modal-footer{
+                text-align: center;
+                background: #eee;
+            }
+        }
+    }
+    
+    
+}
+
+
+
+
+//************** ABOUT
+.img-con-bordes{
+    border: 3px solid #333;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.team
+{ 
+    >header{ 
+        text-align: center;
+        margin-top: 15px;
+        
+        h3{ display: inline-block;  color: @cl-tortoise;  font-size: 25px; }
+        img{ width: 200px;  max-width: 100%; margin-top: -10px;}
+    }
+    
+    .member
+    { 
+        margin: 32px auto;
+        
+        >img{
+            width: 200px;
+        }
+        
+        >b{ 
+            display: block;
+            margin: 15px 0 5px 0;
+            text-align: center;
+        }
+        
+        >i{
+            display: block;
+            margin: 5px 0 10px 0;
+            text-align: center;
+            color: #999;
+            font-size: 0.85em;
+        }
+        
+        .brand-icons{ 
+            
+            width: 100%;
+            text-align: center;
+            font-size: 19px;
+            
+            a{ 
+                margin: 0 5%;
+                &:hover{
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+//************* INSTRUCCIONES
+
+#my-affix{ 
+    display: none;
+    
+    @media (min-width: 768px){
+        display: block;
+    }
+}
+
+#my-affix>div
+{ 
+    @cl-aff: @cl-tortoise;
+    @cl-aff-light: screen(@cl-tortoise, #ddd);
+        
+    >ul
+    { 
+        li{
+            >a{
+                color: #999;
+                padding: 6px 15px;
+                
+                &:hover, &:focus{
+                    background: @cl-aff-light;
+                    color: @cl-aff;
+                    border-left: 1px solid @cl-aff;
+                }
+            }
+            
+            ul{
+                padding-left: 15px;
+                display: none;
+            }
+        }
+        
+        li.active{
+            >a{ 
+                color: @cl-aff;
+                font-weight: bold;
+                border-left: 3px solid @cl-aff;
+            }
+            
+            ul{
+                display: block;
+            }
+        }
+    }
+}
+
+.instrucciones-container{
+    
+    img{
+        display: block;
+        margin: 0 auto;
+        max-width: 90%;
+        height: auto;
+    }
+    
+    h2{
+        margin-top: 50px;
+        color: @cl-tortoise;
+    }
+    
+    h3{
+        margin-top: 30px;
+        color: #888;
+    }
+}
+
+
+
+//*********** TEMPLATE
+
+.navbar-inverse{
+    .navbar-nav > li > a , .navbar-brand{
+        color: #999;
+    }
+    
+    .navbar-brand.active{
+        color: #fff;
+    }
+}
+
+
+footer.footer{
+    display: block;
+    background: #444;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    
+    p{
+        margin-bottom: 0;
+    }
+    
+    a{
+        color: #6EB7F7;
+        
+        &.fa:hover, &.fa:focus{
+            text-decoration: none;
+        }
+    }
+}
+
+.some-pad{
+    padding: 20px 3% 5px 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

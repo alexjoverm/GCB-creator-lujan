@@ -1,0 +1,297 @@
+<div class="container" ng-controller="Main2Ctrl">
+   
+   <div id="bloque-msg">
+       <div ng-if="preguntas.length == 0" class="bq-msg alert alert-info">
+           <span>Inserta preguntas mediante los botones </span> 
+            <div class="btn-group" style="margin: 0 15px;">
+               <a class="btn btn-default"><i class="fa fa-header"></i></a>
+                <a class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                <a class="btn btn-default"><i class="glyphicon glyphicon-minus"></i></a>
+                <a class="btn btn-default"><i class="glyphicon glyphicon-th-list"></i></a>
+            </div>
+            <span>de la barra de herramientas.</span> 
+       </div>
+       <div class="bq-msg alert alert-danger">
+           Esta versión la beta 1.0. Si notas algún error, sientete libre de informar a <a href="mailto:domoferaapp@gmail.com?Subject=Error user" target="_top">domoferaapp@gmail.com</a> indicando el error lo más específicamente posible. Gracias por tu colaboración.
+       </div>
+   </div>
+ 
+   <input id="fichero-act" type="file" name="fichero" accept=".js" style="display: none;" />
+   
+    <div class="panel panel-default" style="background: #eee">
+        <nav id="gcbc-toolbar" class="btn-toolbar">
+            <div class="container">
+                <div class="col-sm-12">
+                    <div class="btn-group">
+                        <a class="btn btn-default" ng-class="{'disabled': preguntas.length==0}" data-toggle="tooltip" title="Borrar todo" ng-click="CloseAll()"><i class="glyphicon glyphicon-remove-circle"></i></a>
+                        <a class="btn btn-default" ng-class="{'disabled': preguntas.length==0}" ng-click="HacerPeticion()" data-toggle="tooltip" title="Descargar"><i class="glyphicon glyphicon-floppy-save"></i></a>
+                        <a class="btn btn-default" ng-click="SubirFichero()" data-toggle="tooltip" title="Abrir fichero"><i class="glyphicon glyphicon-floppy-open"></i></a>
+                        <a id="boton-colapsado" ng-class="{'disabled': preguntas.length==0}" ng-click="CollapseAll()" class="btn btn-default" data-toggle="tooltip" title="Collapsar / Expandir">
+                            <i ng-class="{'fa fa-chevron-up': !colapsados , 'fa fa-chevron-down': colapsados}"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="btn-group">
+                       <a class="btn btn-default" data-toggle="tooltip" title="Nueva HTML" ng-click="CrearHTML(-1)"><i class="fa fa-header"></i></a>
+                        <a class="btn btn-default" data-toggle="tooltip" title="Nueva free-text" ng-click="CrearFreetext(-1)"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <a class="btn btn-default" data-toggle="tooltip" title="Nueva mult-choice" ng-click="CrearMultiplechoice(-1)"><i class="glyphicon glyphicon-minus"></i></a>
+                        <a class="btn btn-default" data-toggle="tooltip" title="Nueva mult-choice-list" ng-click="CrearMultiplechoiceGroup(-1)"><i class="glyphicon glyphicon-th-list"></i></a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+  
+   <!-- TITULO -->
+    <div id="bloque-titulo" ng-model="titulo" ng-class="{'has-success' : !titulo.error && titulo.success , 'has-error' : titulo.error && !titulo.success}">
+        <input type="text" class="form-control" ng-model="titulo.text" placeholder="Titulo... (activity-X.X)" ng-keyup="ComprobarTitulo()">
+        <div class="error-container" ng-if="titulo.error">
+            <small class="help-block">Formato incorrecto. Debe ser "activity-X.X" donde las X son "tema.actividad"</small>
+        </div>
+    </div>
+   
+    <!--  CONTENIDO de las Preguntas -->
+
+    <div id="questions-container" class="panel panel-default" ui-sortable="sortOptions" ng-model="preguntas" ng-show="preguntas.length > 0"> 
+       
+        <div ng-repeat="pregunta in preguntas track by $index" on-finish-render>
+           
+          <!--  INSERT QUESTION  -->
+          <div class="insert-question">
+              <div> 
+                 <a class="open-popover" tabindex="0" data-toggle="popover"><span class="fa fa-plus"></span></a>
+                 
+                  <div class="btn-group hide">
+                       <a class="btn btn-default" data-toggle="tooltip" title="Nueva HTML" ng-click="CrearHTML({{$index}})"><i class="fa fa-header"></i></a>
+                        <a class="btn btn-default" data-toggle="tooltip" title="Nueva free-text" ng-click="CrearFreetext({{$index}})"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <a class="btn btn-default" data-toggle="tooltip" title="Nueva mult-choice" ng-click="CrearMultiplechoice({{$index}})"><i class="glyphicon glyphicon-minus"></i></a>
+                        <a class="btn btn-default" data-toggle="tooltip" title="Nueva mult-choice-list" ng-click="CrearMultiplechoiceGroup({{$index}})"><i class="glyphicon glyphicon-th-list"></i></a>
+                  </div>
+              </div>
+          </div>
+           
+          <!--  QUESTION  -->           
+            <div class="question-wrapper" ng-class="{ 'colapsado': pregunta.colapsado }">
+                <div class="questions-inside-left">
+                    <span class="glyphicon glyphicon-move"></span>
+                </div>
+            
+             
+              <!-- Pregunta -->
+                <div class="questions-inside-right">
+                    <header>
+                       <h3>Pregunta {{$index + 1}} <i>({{pregunta.questionType}}<span ng-if="pregunta.questionType == undefined">Sólo HTML</span>)</i></h3>
+                        <div class="question-header-buttons">
+                            <a class="question-collapse" ng-click="Collapse($index)">
+                              <span class="fa" ng-class="{'fa-chevron-down': pregunta.colapsado , 'fa-chevron-up': !pregunta.colapsado }"></span>
+                            </a>
+                            <a class="question-close" ng-click="Close($index)"><span class="fa fa-remove"></span></a>
+                        </div>
+                    </header>
+                    
+                    
+                <!-- Sólo HTML -->
+                    <div class="question-wrap" ng-if="pregunta.questionType == undefined"> 
+                       <div class="input-group">
+                          <span class="form-control" name="prevhtml" contenteditable="true" ng-bind-html="pregunta.prevHTML | unsafe" ng-model="pregunta.prevHTML" ></span>
+                          <span class="input-group-btn">
+                            <a class="btn editar" ng-click="Editar($event, 'preguntas[{{$index}}].prevHTML', $index)"><span class="fa fa-edit"></span></a>
+                          </span>
+                        </div>
+                    </div>
+            
+                <!-- PREGUNTA en general -->
+                    <div class="question-wrap" ng-if="pregunta.questionType != undefined && pregunta.questionType != 'multiple choice group'">
+                        <span class="span-label"><b>Pregunta: </b></span>
+                        <div class="input-group ">
+                          <span class="form-control" name="preg" contenteditable="true" ng-bind-html="pregunta.questionHTML | unsafe" ng-model="pregunta.questionHTML" ></span>
+                          <span class="input-group-btn">
+                            <a class="btn editar" ng-click="Editar($event, 'preguntas[{{$index}}].questionHTML', $index)"><span class="fa fa-edit"></span></a>
+                          </span>
+                        </div>
+                    </div>
+            
+                    <!-- FreeText question -->
+                    <div class="container-fluid" ng-if="pregunta.questionType == 'freetext'">
+                        <div class="col-sm-4 ">
+                            <textarea class="form-control" name="ftcorrectanswer" placeholder="Respuesta..." ng-model="pregunta.correctAnswerString" ></textarea>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group ">
+                               <textarea class="form-control" name="ftfeedbackok" ng-model="pregunta.correctAnswerOutput" placeholder="Feedback OK..." ></textarea>
+                               <span class="input-group-btn">
+                                <a class="btn editar" ng-click="Editar($event, 'preguntas[{{$index}}].correctAnswerOutput', $index)"><span class="fa fa-edit"></span></a>
+                              </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                           <div class="input-group ">
+                               <textarea class="form-control" name="ftfeedbackwrong" ng-model="pregunta.incorrectAnswerOutput" placeholder="Feedback Mal..." ></textarea>
+                               <span class="input-group-btn">
+                                <a class="btn editar" ng-click="Editar($event, 'preguntas[{{$index}}].incorrectAnswerOutput', $index)"><span class="fa fa-edit"></span></a>
+                              </span>
+                            </div>
+                        </div>
+                    </div>
+            
+            
+                    <!-- Multiple choice question -->
+                    <div class="container-fluid multiple-choice-wrap" ng-if="pregunta.questionType == 'multiple choice'">
+                        <div class="span-label"><b>Respuestas: </b></div>
+                       <ol>
+                           <li class="choice-animation" ng-repeat="choice in pregunta.choices track by $index">
+                              <span class="num-list"></span>
+                               <ul>
+                                   <li>
+                                       <textarea class="form-control" name="mcanswer" type="text" placeholder="Texto..." ng-model="choice[0]" ></textarea>
+                                   </li>
+                                   <li>
+                                      <div class="input-group ">
+                                       <textarea class="form-control" name="mcfeedback" type="text" placeholder="Salida..." ng-model="choice[2]" ></textarea>
+                                       <span class="input-group-btn">
+                                          <a class="btn editar" ng-click="Editar($event, 'preguntas[{{$index}}].choices[{{$index}}][2]', $parent.$index)"><span class="fa fa-edit"></span></a>
+                                      </span>
+                                    </div>
+                                       
+                                   </li>
+                                   <li>
+                                       <div class="my-checkbox" ng-click="MarcarSingle($parent.$index, $index)">
+                                            <input type="checkbox" ng-model="choice[1]" >
+                                            <label></label>
+                                        </div> Correcta
+                                       <span class="close-choice fa fa-remove" ng-click="CloseChoice($parent.$index, $index)"></span>
+                                    </li>
+                               </ul>
+                           </li>
+                           <span class="add-question fa fa-plus" ng-class="{'disabled': pregunta.choices.length >= maxRespuestas}" ng-click="AddChoice($index)"></span>
+                               <i class="text-danger" ng-if="pregunta.choices.length >= maxRespuestas"> No puedes insertar más de {{pregunta.choices.length}} respuestas</i>
+                       </ol>
+                    </div>
+            
+            
+                    <!-- Group multiple choice question -->
+                    <div class="container-fluid multiple-choice-group-wrap" ng-if="pregunta.questionType == 'multiple choice group'">
+                        <!-- Enunciado -->
+                        <div class="question-wrap">
+                            <span class="span-label"><b>Enunciado: </b></span>
+                            <div class="input-group ">
+                              <span class="form-control" name="mcgenunciado" contenteditable="true" ng-model="pregunta.questionGroupHTML" ng-bind-html="pregunta.questionGroupHTML | unsafe" ></span>
+                              <span class="input-group-btn">
+                                <a class="btn editar" ng-click="Editar($event, 'preguntas[{{$index}}].questionHTML', $index)"><span class="fa fa-edit"></span></a>
+                              </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Feedback and minCorrectAnswers -->
+                        <div class="container-fluid">
+                            <div class="col-sm-5">
+                                <div class="input-group ">
+                                   <textarea class="form-control" name="mcgfeedbackok" placeholder="Feedback OK..." ng-model="pregunta.allCorrectOutput" ></textarea>
+                                   <span class="input-group-btn">
+                                    <a class="btn editar" ng-click="Editar($event, 'preguntas[{{$index}}].allCorrectOutput', $index)"><span class="fa fa-edit"></span></a>
+                                  </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="input-group ">
+                                   <textarea class="form-control" name="mcgfeedbackwrong" ng-model="pregunta.someIncorrectOutput" placeholder="Feedback Wrong..." ></textarea>
+                                   <span class="input-group-btn">
+                                    <a class="btn editar" ng-click="Editar($event, 'preguntas[{{$index}}].someIncorrectOutput', $index)"><span class="fa fa-edit"></span></a>
+                                  </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 ">
+                                <input name="mcgnumber" type="number" min="1" max="{{pregunta.questionsList.length}}" step="1" class="form-control" ng-model="pregunta.allCorrectMinCount" placeholder="1"  ng-blur="CheckNumber($index)"></input>
+                                
+                                <a class="btn-ayuda" data-toggle="tooltip" title="Mínimo de preguntas correctas"><span class="fa fa-question"></span></a>    
+                            </div>
+                        </div>
+                        
+                        <!-- Bloque Preguntas -->
+                        <div class="inner-questions-header">
+                            <h3>Preguntas</h3>
+                            <a class="question-collapse" ng-click="GroupCollapseAll($index)">
+                              <span class="fa fa-angle-double-up"></span>
+                            </a>
+                        </div>
+                        
+                        
+                        <!-- Bloque de Single multiple choice  -->
+                        <div class="row inner-sortable" ui-sortable="sortOptions" ng-model="pregunta.questionsList">
+                            <div class="question-wrapper" ng-class="{ 'colapsado': question.colapsado }" ng-repeat="question in pregunta.questionsList track by $index">
+                                <div class="questions-inside-left inner-handle">
+                                    <span class="glyphicon glyphicon-move"></span>
+                                </div>
+                                
+                                <div class="questions-inside-right">
+                                   <div class="question-wrap">
+                                        <span class="span-label"><b>Pregunta {{ $index + 1 }}: </b></span>
+                                        <div class="input-group">
+                                          <span class="form-control" contenteditable="true" ng-model="question.questionHTML" ng-bind-html="question.questionHTML | unsafe" ></span>
+                                          <span class="input-group-btn">
+                                            <a class="btn editar" ng-click="Editar($event, 'preguntas[{{$index}}].questionsList[{{$index}}].questionHTML', $parent.$index)"><span class="fa fa-edit"></span></a>
+                                          </span>
+                                        </div>
+                                    </div>
+                                    <div class="question-group-buttons">
+                                        <a class="question-collapse" ng-click="GroupCollapse($parent.$index, $index)">
+                                          <span class="fa" ng-class="{'fa-chevron-down': question.colapsado , 'fa-chevron-up': !question.colapsado }"></span>
+                                        </a>
+                                        <a class="question-close" ng-click="GroupClose($parent.$index, $index)"><span class="fa fa-remove"></span></a>
+                                    </div>
+                                    
+                                    <div class="clear"></div>
+                                    
+                                    <div class="container-fluid multiple-choice-wrap">
+                                        
+                                        <div class="span-label"><b>Respuestas: </b></div>
+                                        <div class="multiselect">
+                                            <b>Multi-seleccionable: </b>
+                                            <div class="my-checkbox" ng-click="MarcarMultiselect($parent.$index, $index)">
+                                                <input type="checkbox" ng-model="question.multiSelect" >
+                                                <label></label>
+                                            </div>
+                                        </div>
+                                       <ol>
+                                           <li class="choice-animation" ng-repeat="qchoice in question.choices track by $index">
+                                              <span class="num-list"></span>
+                                               <ul>
+                                                   <li>
+                                                       <textarea class="form-control" type="text" placeholder="Texto..." ng-model="question.choices[$index]" ></textarea>
+                                                   </li>
+                                                   <li>
+                                                        <div class="my-checkbox">
+                                                           <input type="checkbox" ng-checked="IsInArray($parent.$parent.$index, $parent.$index, $index)" > 
+                                                           <label ng-click="Marcar($parent.$parent.$index, $parent.$index, $index)"></label>
+                                                        </div>Correcta 
+                                                       
+                                                       <span class="close-choice fa fa-remove" ng-click="InnerCloseChoice($parent.$parent.$index, $parent.$index, $index)"></span>
+                                                   </li>
+                                               </ul>
+                                           </li>
+                                           <span class="add-question fa fa-plus" ng-class="{'disabled': question.choices.length >= maxRespuestas}" ng-click="InnerAddChoice($parent.$index, $index)"></span>
+                                            <i class="text-danger" ng-if="question.choices.length >= maxPreguntasMCG"> No puedes insertar más de {{question.choices.length}} respuestas</i>
+                                       </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row centrado">
+                            <a class="btn btn-primary btn-lg" ng-click="InnerAddQuestion($index)"><i class="fa fa-plus"> </i> Añadir</a>
+                        </div>
+                        
+                    </div>
+               
+                </div>
+            
+            </div>
+        </div>
+    </div>
+   
+    <pre>{{preguntas | json}}</pre>
+    
+</div>
+
+
